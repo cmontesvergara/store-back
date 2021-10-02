@@ -1,10 +1,11 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+
 const MongoClient = require('mongodb').MongoClient
 const bodyParser = require('body-parser');
+require('dotenv').config();
 
-
+const port = process.env.PORT;
 let db;
 let collection;
 MongoClient.connect("mongodb+srv://test:test@cluster0.dndcx.mongodb.net/axede?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
@@ -17,7 +18,10 @@ MongoClient.connect("mongodb+srv://test:test@cluster0.dndcx.mongodb.net/axede?re
 app.use(bodyParser.json());
 app.get('/', (req, res) => {
 
-    res.send("ruta principal");
+    db.collection('sedes').find().toArray()
+        .then(results => {
+            res.json(results);
+        }).catch(error => console.error(error));
 
 })
 
