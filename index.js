@@ -8,39 +8,40 @@ require('dotenv').config();
 const port = process.env.PORT;
 let db;
 let collection;
-MongoClient.connect("mongodb+srv://test:test@cluster0.dndcx.mongodb.net/axede?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
+MongoClient.connect("mongodb+srv://test:test@cluster0.dndcx.mongodb.net/MontesVergara?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
     if (err) return console.error(err)
     console.log('Connected to Database')
-    db = client.db('axede')
-    collection = db.collection('sedes')
+    db = client.db('MontesVergara')
+    collection = db.collection('Personas')
 })
 //Ruta Principal pueden poner una descripcion Rutas: 
 app.use(bodyParser.json());
 app.get('/', (req, res) => {
 
-    db.collection('sedes').find().toArray()
-        .then(results => {
-            res.json(results);
-        }).catch(error => console.error(error));
+  
+            res.json({
+                Nombre: "API MontesVergara",
+            });
+     
 
 })
 
-app.get('/sedes', (req, res) => {
+app.get('/personas', (req, res) => {
 
-    db.collection('sedes').find().toArray()
-        .then(results => {
-            res.json(results);
-        }).catch(error => console.error(error));
-})
-
-app.get('/sedes/:id', (req, res) => {
-    db.collection('sedes').find({ sede: req.params.id, cupos_disp: { $gt: 0 } }).toArray()
+    db.collection('Personas').find().toArray()
         .then(results => {
             res.json(results);
         }).catch(error => console.error(error));
 })
 
-app.post('/sede', (req, res) => {
+app.get('/personas/:nombre', (req, res) => {
+    db.collection('Personas').find({nombre: req.params.nombre}).toArray()
+        .then(results => {
+            res.json(results);
+        }).catch(error => console.error(error));
+})
+
+app.post('/personas', (req, res) => {
     collection.insertOne(req.body)
         .then(result => {
             res.json('Success');
@@ -48,31 +49,13 @@ app.post('/sede', (req, res) => {
         .catch(error => console.error(error))
 })
 
-app.put('/sede/:id', (req, res) => {
-    collection.findOneAndUpdate({ sede: req.params.id }, {
+app.put('/personas/:nombre', (req, res) => {
+    collection.findOneAndUpdate({ nombre: req.params.nombre }, {
             $set: {
 
-                sede: req.body.sede,
-                hab_total: {
-                    std_ttl: req.body.std_ttl,
-                    prm_ttl: req.body.prm_ttl,
-                    vip_ttl: req.body.vip_ttl
-                },
-                hab_disp: {
-                    std_disp: req.body.std_disp,
-                    prm_disp: req.body.prm_disp,
-                    vip_disp: req.body.vip_disp
-                },
-
-                tarifas: {
-                    std_tarf: req.body.std_tarf,
-                    prm_tarf: req.body.prm_tarf,
-                    vip_tarf: req.body.vip_tarf
-                },
-                temporada: req.body.temporada,
-                cupos_disp: req.body.cupos_disp,
-                total_hab: req.body.total_hab,
-                cupo_maxhab: req.body.cupo_maxhab
+                nombre: req.body.nombre,
+                apellido: req.body.apellido,
+                telefono: req.body.telefono
 
             }
         }, {
@@ -82,8 +65,8 @@ app.put('/sede/:id', (req, res) => {
 
 });
 
-app.delete('/sedes/:id', (req, res) => {
-    collection.deleteOne({ name: req.params.id })
+app.delete('/personas/:nombre', (req, res) => {
+    collection.deleteOne({ nombre: req.params.nombre })
         .then(result => {
             res.json('Deleted')
         })
