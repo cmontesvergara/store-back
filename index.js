@@ -4,6 +4,9 @@ const app = express();
 const MongoClient = require('mongodb').MongoClient
 const bodyParser = require('body-parser');
 require('dotenv').config();
+var cors = require("cors");
+
+
 
 const port = process.env.PORT;
 let db;
@@ -16,6 +19,7 @@ MongoClient.connect("mongodb+srv://test:test@cluster0.dndcx.mongodb.net/MontesVe
 })
 //Ruta Principal pueden poner una descripcion Rutas: 
 app.use(bodyParser.json());
+app.use(cors());
 app.get('/', (req, res) => {
 
   
@@ -25,7 +29,6 @@ app.get('/', (req, res) => {
      
 
 })
-
 app.get('/personas', (req, res) => {
 
     db.collection('Personas').find().toArray()
